@@ -13,6 +13,11 @@
 > **WorkFlowX** is a unified, high-performance personal workspace and productivity management platform. Built on modern full-stack architectures (**Next.js App Router, Express 5, MongoDB Atlas, and Redis**), it consolidates **Projects, Tasks, Notes, Financial Tracking, Real-Time Notifications, and Administrative Governance** into a calm, focused, distraction-free interface.
 
 ---
+##  Live Demo
+
+### 👨🏻‍💻 **Explore the Live Project:** [Click Here](https://workflowsx.netlify.app/)
+
+###  **Live URL:** [https://workflowsx.netlify.com](https://workflowsx.netlify.app/)
 
 ##  Table of Contents
 
