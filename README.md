@@ -301,5 +301,5 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Author
 
-- **Author:** [Prashant Kumar](https://github.com/prashantkumar8934810)
+- **Author:** [Prashant Kumar](https://github.com/Prashant01pro)
 
