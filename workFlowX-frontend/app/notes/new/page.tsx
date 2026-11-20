@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, Suspense } from 'react'
 import { CircleAlert, Save, LoaderCircle } from 'lucide-react'
 import { notesApi } from '@/lib/api/notes'
 import { ApiError } from '@/lib/api-client'
 import { useAuth } from '@/lib/auth-context'
 
-export default function NewNotePage() {
+function NewNoteContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const projectId = searchParams.get('projectId') || null
@@ -166,5 +166,13 @@ export default function NewNotePage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function NewNotePage() {
+  return (
+    <Suspense fallback={<div className="app-shell" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading…</div>}>
+      <NewNoteContent />
+    </Suspense>
   )
 }

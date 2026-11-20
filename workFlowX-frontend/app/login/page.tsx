@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState, Suspense } from 'react'
 import { ArrowUpRight, ChevronRight, Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { ApiError } from '@/lib/api-client'
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login, user, isAuthenticated, isLoading } = useAuth()
@@ -140,5 +140,13 @@ export default function LoginPage() {
         <footer className="auth-footer"><span>© 2026 WorkFlowX</span><span>Private by design.</span></footer>
       </section>
     </main>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="auth-page" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading…</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }

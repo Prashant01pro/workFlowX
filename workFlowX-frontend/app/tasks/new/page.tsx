@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState, Suspense } from 'react'
 import { Plus, CircleAlert, LoaderCircle } from 'lucide-react'
 import { tasksApi } from '@/lib/api/tasks'
 import { projectsApi } from '@/lib/api/projects'
@@ -10,7 +10,7 @@ import type { ProjectEntity } from '@/lib/types'
 import { ApiError } from '@/lib/api-client'
 import { useAuth } from '@/lib/auth-context'
 
-export default function NewTaskPage() {
+function NewTaskContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialProjectId = searchParams.get('projectId') || ''
@@ -236,5 +236,13 @@ export default function NewTaskPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function NewTaskPage() {
+  return (
+    <Suspense fallback={<div className="app-shell" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>Loading…</div>}>
+      <NewTaskContent />
+    </Suspense>
   )
 }
