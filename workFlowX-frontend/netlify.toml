@@ -2,5 +2,8 @@
   command = "pnpm build"
   publish = ".next"
 
+[build.environment]
+  NEXT_PUBLIC_API_URL = "https://workflowx-6q1d.onrender.com"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"

@@ -6,7 +6,6 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'WorkFlowX — Bring your work into focus',
   description: 'Projects, tasks, notes, and personal finances in one considered workspace.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
@@ -45,7 +44,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {Boolean(process.env.VERCEL) && <Analytics />}
       </body>
     </html>
   )
