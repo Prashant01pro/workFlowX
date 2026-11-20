@@ -2,10 +2,12 @@ import AppError from "../../utils/appError.js";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { changePasswordService, forgotPasswordService, getActiveSessionsService, loginServices, logoutServices, refreshServices, registerService, resetPasswordService, revokeAllSessionsService, revokeDeviceSessionService, updateUserService } from "./auth.services.js";
 
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
 const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/'
 };
 

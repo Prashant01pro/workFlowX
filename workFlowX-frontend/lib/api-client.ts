@@ -42,6 +42,36 @@ export interface ApiRequestOptions extends Omit<RequestInit, 'body'> {
   skipAuthRefresh?: boolean
 }
 
+// --- Token In-Memory & Storage Management ---
+let currentAccessToken: string | null = null
+
+export function setAccessToken(token: string | null): void {
+  currentAccessToken = token
+  if (typeof window !== 'undefined') {
+    try {
+      if (token) {
+        localStorage.setItem('wx_access_token', token)
+      } else {
+        localStorage.removeItem('wx_access_token')
+      }
+    } catch {
+      // Storage unavailable or blocked by private mode
+    }
+  }
+}
+
+export function getAccessToken(): string | null {
+  if (currentAccessToken) return currentAccessToken
+  if (typeof window !== 'undefined') {
+    try {
+      currentAccessToken = localStorage.getItem('wx_access_token')
+    } catch {
+      return null
+    }
+  }
+  return currentAccessToken
+}
+
 // --- Token Refresh Coordination ---
 let activeRefreshPromise: Promise<boolean> | null = null
 
@@ -56,6 +86,7 @@ export function onAuthFailure(listener: AuthFailureListener): () => void {
 }
 
 function notifyAuthFailure() {
+  setAccessToken(null)
   authFailureListeners.forEach((listener) => {
     try {
       listener()
@@ -94,11 +125,17 @@ export async function refreshAuthToken(): Promise<boolean> {
       })
 
       if (!response.ok) {
+        setAccessToken(null)
         notifyAuthFailure()
         return false
       }
+      const data = (await response.json().catch(() => null)) as { newAccessToken?: string } | null
+      if (data?.newAccessToken) {
+        setAccessToken(data.newAccessToken)
+      }
       return true
     } catch {
+      setAccessToken(null)
       notifyAuthFailure()
       return false
     } finally {
@@ -116,6 +153,11 @@ export async function refreshAuthToken(): Promise<boolean> {
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const url = buildApiUrl(path)
   const headers = new Headers(options.headers || {})
+
+  const token = getAccessToken()
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
 
   let bodyPayload: BodyInit | null | undefined = null
 

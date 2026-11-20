@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { api, onAuthFailure } from './api-client'
+import { api, onAuthFailure, setAccessToken } from './api-client'
 import type { AuthSuccessResponse, ProfileResponse } from './types'
 
 export interface User {
@@ -75,6 +75,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: { email: string; password: string }): Promise<User> => {
     const authRes = await api.post<AuthSuccessResponse>('/api/v1/auth/login', credentials)
+    if (authRes.accessToken) {
+      setAccessToken(authRes.accessToken)
+    }
     let loggedInUser: User = {
       id: authRes.user.id,
       name: authRes.user.name,
@@ -98,6 +101,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (data: { name: string; email: string; password: string; bio?: string }): Promise<User> => {
     const regRes = await api.post<AuthSuccessResponse>('/api/v1/auth/register', data)
+    if (regRes.accessToken) {
+      setAccessToken(regRes.accessToken)
+    }
     let registeredUser: User = {
       id: regRes.user.id,
       name: regRes.user.name,
@@ -124,6 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error('Logout error on server:', err)
     } finally {
+      setAccessToken(null)
       setUser(null)
       router.push('/login')
     }
